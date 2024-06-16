@@ -1,0 +1,91 @@
+first we verify if we can reach our victim by pinging it.
+![image](https://github.com/fersin/writeups/assets/79020501/464396f6-7af6-419c-9fef-168d8ee3a313)
+
+
+once we know that we can reach our victim we can do the first scan through nmap giving us 3 ports opened as results.
+22, 80, 443
+![image](https://github.com/fersin/writeups/assets/79020501/9d126286-3584-4bbc-a45e-38a02e267996)
+
+
+therefore we add our victim machine's ip to /etc/hosts file in order to get a successfull connection via web.
+![image](https://github.com/fersin/writeups/assets/79020501/3fbe0b63-343e-45d4-a7e0-55eedb3d44e2)
+
+ 
+by doing the first directory scan with dirbuster we can see the first 200 response which is /controls.
+![image](https://github.com/fersin/writeups/assets/79020501/e81e8c91-82a8-408b-9faa-726bffe83a46)
+ ![image](https://github.com/fersin/writeups/assets/79020501/d334c8be-3d1e-4756-b0f0-9d7999190fd2)
+
+
+once we know that control directory exists therefore we can use wfuz in order to get more directories out of this locations then we are just going to show results related to, admin, login and admin.*
+![image](https://github.com/fersin/writeups/assets/79020501/a9d38d12-6f6a-41ed-bb6b-5f8cd05d028e)
+
+
+by entering login section we previously found we find a login portal.
+![image](https://github.com/fersin/writeups/assets/79020501/1755b466-08eb-481d-b39e-1cd02c55b385)
+
+
+After attempting a basic credential combination like admin, we get the following error, demonstrating that the admin user exists.
+![image](https://github.com/fersin/writeups/assets/79020501/07bfd2e5-c920-408f-8413-ef790859b444)
+
+
+Searching the web for some vulnerability in Apache OFBiz, we found a tool that helps us exploit it.
+![image](https://github.com/fersin/writeups/assets/79020501/7629e047-6d8e-4be8-b843-d408aafe355a)
+
+
+After running the tool, we get this result.
+![image](https://github.com/fersin/writeups/assets/79020501/70d81d9d-afe8-47d3-976f-1e745417e8aa)
+
+
+Seeing that it is vulnerable, we use the same exploit to send a command, putting netcat on listen mode on port 8080 to connect.
+![image](https://github.com/fersin/writeups/assets/79020501/2c8cfe1d-9a04-4cc1-8240-e2eb88ec9fd4)
+
+
+We see that the connection was successful from our machine.
+![image](https://github.com/fersin/writeups/assets/79020501/f9fed7da-a533-441a-a184-72ca94735472)
+
+
+Navigating to the /home/ofbiz path, we found our first flag.
+![image](https://github.com/fersin/writeups/assets/79020501/2501dd5d-3c2b-41f8-994c-4cc26b2ec282)
+
+
+After exploring the machine a bit more, we found a file called adminuserlogindata.xml.
+![image](https://github.com/fersin/writeups/assets/79020501/381de007-fc92-40a8-9956-06ee663fd37f)
+
+
+Opening the file, we found a hashed password and its user.
+![image](https://github.com/fersin/writeups/assets/79020501/c3fad199-161a-4e5e-9b8d-5fe6fe1c52c0)
+
+
+Moving a bit more through the directories, we found directories with information related to the Derby database.
+![image](https://github.com/fersin/writeups/assets/79020501/f870ca21-7ba0-40b0-8c0d-6481d9ab1f70)
+
+
+Searching the c54d0.dat file, we found a possible hash for our password.
+![image](https://github.com/fersin/writeups/assets/79020501/0a43d292-1300-4052-a257-5d33e1c2c907)
+
+
+Using CyberChef to make the hash more friendly for hashcat,
+![image](https://github.com/fersin/writeups/assets/79020501/b7e4cad6-80f0-4a49-b723-226246911cc0)
+
+
+Using hashcat, we got the result of the cracked hash.
+![image](https://github.com/fersin/writeups/assets/79020501/874e3ce7-4a85-4a97-9fd9-758be50785fd)
+
+
+After obtaining the password, we tried to log in from the victim machine with netcat.
+![image](https://github.com/fersin/writeups/assets/79020501/57c0bdd1-4327-45be-bada-5bfa481e483a)
+
+
+We obtained the root flag.
+![image](https://github.com/fersin/writeups/assets/79020501/8519b90a-583c-4025-b9a4-458e361c0352)
+
+
+Other vulnerabilities we can find thanks to Nikto:
+![image](https://github.com/fersin/writeups/assets/79020501/f08f5a02-8ca9-40fa-8572-686ff51666e0)
+
+
+Machine exploited 😊
+![image](https://github.com/fersin/writeups/assets/79020501/ece79b98-5a9b-4f08-89b7-768926c09a23)
+
+
+ 
